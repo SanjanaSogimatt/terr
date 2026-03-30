@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERRA — Home & Living</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --clay:       #C4A882;
+    --sand:       #E8D9C4;
+    --linen:      #F5EFE6;
+    --parchment:  #FAF6F0;
+    --bark:       #7A5C3E;
+    --soil:       #4A3728;
+    --moss:       #6B7B5E;
+    --stone:      #9B8E82;
+    --charcoal:   #2C2420;
+    --cream:      #FFFDF9;
+    --ff-display: 'Cormorant Garamond', serif;
+    --ff-body:    'Jost', sans-serif;
+    --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--ff-body); background: var(--parchment); color: var(--charcoal); overflow-x: hidden; cursor: none; }
+
+  /* CURSOR */
+  .cursor { width: 10px; height: 10px; background: var(--bark); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .3s var(--ease-smooth), height .3s var(--ease-smooth), background .3s; }
+  .cursor-ring { width: 36px; height: 36px; border: 1.5px solid var(--clay); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width .4s var(--ease-smooth), height .4s var(--ease-smooth); }
+  body.hovering .cursor { width: 20px; height: 20px; background: var(--moss); }
+  body.hovering .cursor-ring { width: 56px; height: 56px; border-color: var(--moss); opacity: .5; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 3.5rem; transition: background .5s var(--ease-smooth), padding .4s; }
+  nav.scrolled { background: rgba(250,246,240,0.93); backdrop-filter: blur(12px); padding: .9rem 3.5rem; box-shadow: 0 1px 0 rgba(122,92,62,.12); }
+  .nav-logo { font-family: var(--ff-display); font-size: 1.7rem; font-weight: 600; letter-spacing: .18em; color: var(--soil); text-decoration: none; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--soil); font-size: .75rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; position: relative; padding-bottom: 3px; }
+  .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--clay); transition: width .35s var(--ease-smooth); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--bark) !important; color: var(--cream) !important; padding: .55rem 1.4rem; border-radius: 2px; }
+  .nav-cta:hover { background: var(--soil) !important; }
+  .nav-cta::after { display: none !important; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+  .hamburger span { width: 26px; height: 1.5px; background: var(--soil); transition: all .35s var(--ease-smooth); display: block; }
+  .mobile-menu { display: none; position: fixed; inset: 0; background: var(--linen); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { font-family: var(--ff-display); font-size: 2.5rem; font-weight: 300; color: var(--soil); text-decoration: none; letter-spacing: .06em; transition: color .3s; }
+  .mobile-menu a:hover { color: var(--clay); }
+
+  /* HERO */
+  #home { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 5rem; overflow: hidden; }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 5rem 4rem 5rem 3.5rem; }
+  .hero-tag { font-size: .68rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--clay); margin-bottom: 1.8rem; opacity: 0; transform: translateY(20px); animation: fadeUp .9s var(--ease-smooth) .3s forwards; }
+  .hero-h1 { font-family: var(--ff-display); font-size: clamp(3.2rem,5.5vw,5.6rem); font-weight: 300; line-height: 1.05; color: var(--soil); margin-bottom: 2rem; opacity: 0; transform: translateY(30px); animation: fadeUp 1s var(--ease-smooth) .5s forwards; }
+  .hero-h1 em { font-style: italic; color: var(--clay); }
+  .hero-body { font-size: .95rem; font-weight: 300; line-height: 1.85; color: var(--stone); max-width: 420px; margin-bottom: 3rem; opacity: 0; transform: translateY(20px); animation: fadeUp .9s var(--ease-smooth) .7s forwards; }
+  .hero-btns { display: flex; gap: 1.2rem; flex-wrap: wrap; opacity: 0; transform: translateY(20px); animation: fadeUp .9s var(--ease-smooth) .9s forwards; }
+  .btn-primary { display: inline-flex; align-items: center; gap: .5rem; background: var(--bark); color: var(--cream); padding: .9rem 2rem; font-family: var(--ff-body); font-size: .75rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background .35s, transform .25s; }
+  .btn-primary:hover { background: var(--soil); transform: translateY(-2px); }
+  .btn-outline { display: inline-flex; align-items: center; gap: .5rem; background: transparent; color: var(--bark); padding: .9rem 2rem; font-family: var(--ff-body); font-size: .75rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; border: 1.5px solid var(--clay); cursor: pointer; transition: all .35s; }
+  .btn-outline:hover { background: var(--clay); color: var(--cream); transform: translateY(-2px); }
+  .hero-right { position: relative; overflow: hidden; opacity: 0; animation: fadeIn 1.2s var(--ease-smooth) .4s forwards; }
+  .hero-img-wrap { width: 100%; height: 100%; min-height: 600px; overflow: hidden; }
+  .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); animation: zoomOut 1.8s var(--ease-smooth) .4s forwards; }
+  .hero-badge { position: absolute; bottom: 2.5rem; left: -1.5rem; background: var(--cream); padding: 1.4rem 1.8rem; box-shadow: 0 8px 40px rgba(74,55,40,.14); opacity: 0; transform: translateX(-20px); animation: fadeRight .9s var(--ease-smooth) 1.2s forwards; }
+  .hero-badge .badge-num { font-family: var(--ff-display); font-size: 2.4rem; font-weight: 600; color: var(--bark); line-height: 1; }
+  .hero-badge .badge-text { font-size: .68rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--stone); margin-top: 4px; }
+
+  /* MARQUEE */
+  .marquee-bar { background: var(--bark); padding: .9rem 0; overflow: hidden; }
+  .marquee-track { display: flex; gap: 3rem; white-space: nowrap; animation: marquee 22s linear infinite; }
+  .marquee-item { font-size: .7rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--sand); flex-shrink: 0; }
+  .marquee-dot { color: var(--clay); margin: 0 .5rem; }
+
+  /* SECTIONS */
+  section { padding: 7rem 3.5rem; }
+  .sec-tag { font-size: .68rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--clay); margin-bottom: 1rem; }
+  .sec-title { font-family: var(--ff-display); font-size: clamp(2rem,4vw,3.4rem); font-weight: 300; color: var(--soil); line-height: 1.2; margin-bottom: 1.5rem; }
+  .sec-title em { font-style: italic; color: var(--clay); }
+  .sec-body { font-size: .9rem; font-weight: 300; line-height: 1.9; color: var(--stone); max-width: 480px; }
+
+  /* ABOUT */
+  #about { background: var(--linen); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-imgs { position: relative; height: 580px; }
+  .about-img-main { position: absolute; left: 0; top: 0; width: 72%; height: 82%; object-fit: cover; z-index: 2; box-shadow: 0 20px 60px rgba(74,55,40,.14); }
+  .about-img-sec { position: absolute; right: 0; bottom: 0; width: 55%; height: 55%; object-fit: cover; z-index: 3; box-shadow: 0 20px 60px rgba(74,55,40,.18); border: 6px solid var(--linen); }
+  .about-stat-pill { position: absolute; top: 42%; left: 60%; z-index: 4; background: var(--bark); color: var(--cream); padding: 1.2rem 1.6rem; text-align: center; box-shadow: 0 8px 30px rgba(74,55,40,.2); }
+  .about-stat-pill .n { font-family: var(--ff-display); font-size: 2.2rem; font-weight: 600; line-height: 1; }
+  .about-stat-pill .l { font-size: .62rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; opacity: .8; margin-top: 4px; }
+  .about-values { margin-top: 2.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .value-card { padding: 1.4rem; border: 1px solid rgba(196,168,130,.3); background: var(--parchment); transition: border-color .35s, transform .35s; }
+  .value-card:hover { border-color: var(--clay); transform: translateY(-4px); }
+  .value-card .v-icon { font-size: 1.4rem; margin-bottom: .7rem; }
+  .value-card .v-title { font-family: var(--ff-display); font-size: 1rem; font-weight: 500; color: var(--soil); margin-bottom: .4rem; }
+  .value-card .v-desc { font-size: .78rem; font-weight: 300; color: var(--stone); line-height: 1.7; }
+
+  /* COLLECTIONS */
+  #collections { background: var(--parchment); }
+  .collections-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem; }
+  .collections-grid { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto auto; gap: 1.5rem; }
+  .coll-card { position: relative; overflow: hidden; cursor: pointer; background: var(--sand); }
+  .coll-card.featured { grid-column: span 2; grid-row: span 2; }
+  .coll-card img { width: 100%; height: 100%; object-fit: cover; min-height: 280px; transition: transform .7s var(--ease-smooth); }
+  .coll-card.featured img { min-height: 500px; }
+  .coll-card:hover img { transform: scale(1.06); }
+  .coll-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(44,36,32,.75) 0%, transparent 55%); opacity: .7; transition: opacity .4s; }
+  .coll-card:hover .coll-overlay { opacity: 1; }
+  .coll-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.8rem; }
+  .coll-cat { font-size: .62rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--clay); margin-bottom: .5rem; }
+  .coll-name { font-family: var(--ff-display); font-size: 1.6rem; font-weight: 400; color: var(--cream); line-height: 1.15; }
+  .coll-card.featured .coll-name { font-size: 2.4rem; }
+  .coll-arrow { display: inline-flex; align-items: center; gap: .5rem; color: var(--sand); font-size: .7rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; margin-top: .8rem; opacity: 0; transform: translateY(8px); transition: all .35s; }
+  .coll-card:hover .coll-arrow { opacity: 1; transform: translateY(0); }
+
+  /* SHOP */
+  #shop { background: var(--linen); }
+  .products-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem; }
+  .filter-tabs { display: flex; gap: .8rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .filter-tab { padding: .45rem 1.2rem; border: 1.5px solid transparent; font-family: var(--ff-body); font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; color: var(--stone); background: transparent; transition: all .3s; }
+  .filter-tab.active, .filter-tab:hover { border-color: var(--clay); color: var(--bark); background: rgba(196,168,130,.12); }
+  .products-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.8rem; }
+  .product-card { position: relative; background: var(--parchment); transition: transform .4s var(--ease-smooth), box-shadow .4s; }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(74,55,40,.13); }
+  .product-img-wrap { position: relative; overflow: hidden; aspect-ratio: 3/4; background: var(--sand); }
+  .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease-smooth); }
+  .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+  .product-badge { position: absolute; top: 1rem; left: 1rem; background: var(--moss); color: var(--cream); font-size: .6rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; padding: .3rem .7rem; }
+  .product-wish { position: absolute; top: 1rem; right: 1rem; width: 34px; height: 34px; background: var(--cream); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; opacity: 0; transition: opacity .3s, transform .3s; }
+  .product-card:hover .product-wish { opacity: 1; }
+  .product-quick { position: absolute; bottom: 0; left: 0; right: 0; background: var(--soil); color: var(--cream); border: none; cursor: pointer; padding: .9rem; font-family: var(--ff-body); font-size: .7rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; transform: translateY(100%); transition: transform .4s var(--ease-smooth); width: 100%; }
+  .product-card:hover .product-quick { transform: translateY(0); }
+  .product-info { padding: 1.2rem; }
+  .product-cat { font-size: .62rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--clay); margin-bottom: .4rem; }
+  .product-name { font-family: var(--ff-display); font-size: 1.15rem; font-weight: 400; color: var(--soil); margin-bottom: .5rem; line-height: 1.3; }
+  .product-price { font-size: .85rem; font-weight: 500; color: var(--bark); }
+  .product-price .old { text-decoration: line-through; color: var(--stone); font-weight: 300; margin-right: .4rem; }
+
+  /* PROCESS */
+  #process { background: var(--soil); padding: 7rem 3.5rem; }
+  #process .sec-tag { color: var(--clay); }
+  #process .sec-title { color: var(--cream); }
+  .process-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; margin-top: 4rem; position: relative; }
+  .process-grid::before { content: ''; position: absolute; top: 28px; left: 10%; right: 10%; height: 1px; background: rgba(196,168,130,.3); }
+  .process-step { text-align: center; padding: 0 2rem; position: relative; z-index: 1; }
+  .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--bark); color: var(--cream); font-family: var(--ff-display); font-size: 1.4rem; font-weight: 300; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; border: 2px solid var(--clay); transition: background .3s, transform .3s; }
+  .process-step:hover .step-num { background: var(--clay); transform: scale(1.1); }
+  .step-title { font-family: var(--ff-display); font-size: 1.2rem; font-weight: 400; color: var(--sand); margin-bottom: .8rem; }
+  .step-desc { font-size: .8rem; font-weight: 300; color: rgba(232,217,196,.6); line-height: 1.8; }
+
+  /* TESTIMONIALS */
+  #testimonials { background: var(--parchment); }
+  .testi-head { text-align: center; max-width: 580px; margin: 0 auto 4rem; }
+  .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+  .testi-card { background: var(--linen); padding: 2.2rem; border: 1px solid rgba(196,168,130,.2); transition: transform .4s var(--ease-smooth), box-shadow .4s; }
+  .testi-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(74,55,40,.1); }
+  .testi-quote { font-family: var(--ff-display); font-size: 4rem; font-weight: 600; color: var(--clay); line-height: .6; margin-bottom: 1.2rem; opacity: .6; }
+  .testi-text { font-family: var(--ff-display); font-size: 1.05rem; font-weight: 300; font-style: italic; line-height: 1.8; color: var(--soil); margin-bottom: 1.5rem; }
+  .testi-author { display: flex; align-items: center; gap: .9rem; }
+  .testi-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--clay); }
+  .testi-name { font-size: .82rem; font-weight: 500; color: var(--soil); }
+  .testi-role { font-size: .7rem; font-weight: 300; color: var(--stone); margin-top: 2px; }
+  .stars { color: var(--clay); font-size: .8rem; letter-spacing: 2px; margin-bottom: 1rem; }
+
+  /* NEWSLETTER */
+  .newsletter-strip { background: var(--sand); padding: 3rem 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .nl-text .nl-tag { font-size: .66rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--bark); margin-bottom: .4rem; }
+  .nl-text h3 { font-family: var(--ff-display); font-size: 1.6rem; font-weight: 400; color: var(--soil); }
+  .nl-form { display: flex; max-width: 420px; width: 100%; }
+  .nl-form input { flex: 1; padding: .9rem 1.2rem; background: var(--cream); border: 1px solid rgba(122,92,62,.25); border-right: none; font-family: var(--ff-body); font-size: .85rem; font-weight: 300; color: var(--soil); outline: none; }
+  .nl-form input::placeholder { color: var(--stone); }
+  .nl-form button { background: var(--bark); color: var(--cream); border: none; cursor: pointer; padding: .9rem 1.6rem; font-family: var(--ff-body); font-size: .7rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; transition: background .3s; }
+  .nl-form button:hover { background: var(--soil); }
+
+  /* CONTACT */
+  #contact { background: var(--bark); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  #contact .sec-tag { color: var(--clay); }
+  #contact .sec-title { color: var(--cream); }
+  #contact .sec-body { color: rgba(245,239,230,.75); }
+  .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .form-group { display: flex; flex-direction: column; gap: .5rem; }
+  .form-group label { font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(245,239,230,.6); }
+  .form-group input, .form-group textarea, .form-group select { background: rgba(255,253,249,.08); border: 1px solid rgba(245,239,230,.2); color: var(--cream); font-family: var(--ff-body); font-size: .88rem; font-weight: 300; padding: .85rem 1rem; outline: none; transition: border-color .3s; resize: none; -webkit-appearance: none; }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(245,239,230,.35); }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--clay); }
+  .form-group select option { background: var(--soil); }
+  textarea { height: 110px; }
+  .btn-send { background: var(--clay); color: var(--cream); padding: 1rem 2.2rem; border: none; cursor: pointer; font-family: var(--ff-body); font-size: .75rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; align-self: flex-start; transition: background .35s, transform .25s; }
+  .btn-send:hover { background: var(--soil); transform: translateY(-2px); }
+  .contact-info { display: flex; flex-direction: column; gap: 2rem; }
+  .info-item { display: flex; align-items: flex-start; gap: 1.2rem; }
+  .info-icon { width: 44px; height: 44px; background: rgba(255,253,249,.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+  .info-label { font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--clay); margin-bottom: .3rem; }
+  .info-val { font-size: .88rem; font-weight: 300; color: rgba(245,239,230,.85); line-height: 1.6; }
+
+  /* FOOTER */
+  footer { background: var(--charcoal); padding: 5rem 3.5rem 2.5rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgba(196,168,130,.15); }
+  .footer-brand .logo { font-family: var(--ff-display); font-size: 1.8rem; font-weight: 600; letter-spacing: .18em; color: var(--sand); display: block; margin-bottom: 1.2rem; }
+  .footer-brand p { font-size: .82rem; font-weight: 300; line-height: 1.85; color: rgba(232,217,196,.55); max-width: 300px; margin-bottom: 1.8rem; }
+  .social-links { display: flex; gap: .8rem; }
+  .social-link { width: 36px; height: 36px; border: 1px solid rgba(196,168,130,.25); display: flex; align-items: center; justify-content: center; color: var(--clay); text-decoration: none; font-size: .9rem; transition: all .3s; }
+  .social-link:hover { background: var(--clay); color: var(--cream); border-color: var(--clay); }
+  .footer-col h4 { font-family: var(--ff-display); font-size: 1rem; font-weight: 500; color: var(--sand); margin-bottom: 1.4rem; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+  .footer-col ul a { text-decoration: none; font-size: .8rem; font-weight: 300; color: rgba(232,217,196,.55); letter-spacing: .06em; transition: color .3s; }
+  .footer-col ul a:hover { color: var(--clay); }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 2rem; flex-wrap: wrap; gap: 1rem; }
+  .footer-bottom p { font-size: .72rem; font-weight: 300; color: rgba(232,217,196,.35); letter-spacing: .06em; }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(36px); transition: opacity .9s var(--ease-smooth), transform .9s var(--ease-smooth); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .22s; }
+  .reveal-delay-3 { transition-delay: .34s; }
+  .reveal-delay-4 { transition-delay: .46s; }
+
+  /* KEYFRAMES */
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { to { opacity:1; } }
+  @keyframes zoomOut { to { transform:scale(1); } }
+  @keyframes fadeRight { to { opacity:1; transform:translateX(0); } }
+  @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  @keyframes loaderChar { to { opacity:1; transform:translateY(0); } }
+
+  /* LOADER */
+  .page-loader { position: fixed; inset: 0; background: var(--parchment); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity .6s var(--ease-smooth), visibility .6s; }
+  .page-loader.done { opacity: 0; visibility: hidden; }
+  .loader-logo { font-family: var(--ff-display); font-size: 2.2rem; font-weight: 600; letter-spacing: .3em; color: var(--soil); text-transform: uppercase; overflow: hidden; }
+  .loader-logo span { display: inline-block; animation: loaderChar 1s var(--ease-smooth) forwards; opacity: 0; transform: translateY(30px); }
+
+  /* BACK TOP */
+  .back-top { position: fixed; bottom: 2rem; right: 2rem; z-index: 99; width: 44px; height: 44px; background: var(--bark); color: var(--cream); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; opacity: 0; transform: translateY(10px); transition: all .4s var(--ease-smooth); pointer-events: none; }
+  .back-top.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .back-top:hover { background: var(--soil); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .products-grid { grid-template-columns: repeat(3,1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.8rem; }
+    nav.scrolled { padding: .8rem 1.8rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    #home { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 3rem 1.8rem 2rem; order: 2; }
+    .hero-right { min-height: 55vw; order: 1; }
+    .hero-img-wrap { min-height: 55vw; }
+    .hero-badge { left: 1rem; bottom: 1rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.8rem; }
+    .about-imgs { height: 380px; }
+    section { padding: 5rem 1.8rem; }
+    .collections-grid { grid-template-columns: 1fr 1fr; }
+    .coll-card.featured { grid-column: span 2; grid-row: span 1; }
+    .coll-card.featured img { min-height: 320px; }
+    .products-grid { grid-template-columns: repeat(2,1fr); }
+    .process-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .process-grid::before { display: none; }
+    .testi-grid { grid-template-columns: 1fr; }
+    #contact { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.8rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .newsletter-strip { padding: 2.5rem 1.8rem; }
+    footer { padding: 4rem 1.8rem 2rem; }
+    .collections-head, .products-head { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 600px) {
+    .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .collections-grid { grid-template-columns: 1fr; }
+    .coll-card.featured { grid-column: span 1; }
+    .about-values { grid-template-columns: 1fr; }
+    .process-grid { grid-template-columns: 1fr; }
+    .hero-h1 { font-size: 2.6rem; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-loader" id="loader">
+  <div class="loader-logo">
+    <span style="animation-delay:.1s">T</span><span style="animation-delay:.18s">E</span><span style="animation-delay:.26s">R</span><span style="animation-delay:.34s">R</span><span style="animation-delay:.42s">A</span>
+  </div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#home" class="nav-logo">Terra</a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home" onclick="closeMobile()">Home</a>
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#collections" onclick="closeMobile()">Collections</a>
+  <a href="#shop" onclick="closeMobile()">Shop</a>
+  <a href="#testimonials" onclick="closeMobile()">Reviews</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-left">
+    <p class="hero-tag">New Arrivals 2025</p>
+    <h1 class="hero-h1">Where <em>Nature</em><br>Meets Home</h1>
+    <p class="hero-body">Curated furniture and décor rooted in organic materials and timeless craftsmanship — spaces that breathe, last, and tell a story.</p>
+    <div class="hero-btns">
+      <a href="#collections" class="btn-primary">Explore Collections →</a>
+      <a href="#about" class="btn-outline">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80" alt="Elegant living room">
+    </div>
+    <div class="hero-badge">
+      <div class="badge-num">500+</div>
+      <div class="badge-text">Handcrafted Pieces</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span class="marquee-item">Sustainable Materials</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Handcrafted Furniture</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Organic Textures</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Timeless Design</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Free Delivery Above ₹25,000</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Sustainable Materials</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Handcrafted Furniture</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Organic Textures</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Timeless Design</span><span class="marquee-dot">✦</span>
+    <span class="marquee-item">Free Delivery Above ₹25,000</span><span class="marquee-dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-imgs reveal">
+    <img class="about-img-main" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&q=80" alt="Elegant sofa">
+    <img class="about-img-sec" src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=500&q=80" alt="Wood texture detail">
+    <div class="about-stat-pill"><div class="n">15+</div><div class="l">Years Crafting</div></div>
+  </div>
+  <div class="about-content">
+    <p class="sec-tag reveal">Our Story</p>
+    <h2 class="sec-title reveal reveal-delay-1">Rooted in <em>craft,</em><br>guided by nature</h2>
+    <p class="sec-body reveal reveal-delay-2">Terra was born from a love of honest materials and quiet interiors. We work with artisans across India to create pieces that honour the grain of wood, the weight of stone, and the warmth of hand-woven textiles. Every object carries intention.</p>
+    <div class="about-values reveal reveal-delay-3">
+      <div class="value-card"><div class="v-icon">🌿</div><div class="v-title">Sustainability</div><div class="v-desc">Sourced from responsibly managed forests and natural materials only.</div></div>
+      <div class="value-card"><div class="v-icon">🪵</div><div class="v-title">Craftsmanship</div><div class="v-desc">Every piece hand-finished by skilled artisans with decades of experience.</div></div>
+      <div class="value-card"><div class="v-icon">♾️</div><div class="v-title">Longevity</div><div class="v-desc">Designed to be inherited, not replaced — built to last generations.</div></div>
+      <div class="value-card"><div class="v-icon">🤍</div><div class="v-title">Intentional Beauty</div><div class="v-desc">Aesthetics that calm the mind and warm the soul — nothing superfluous.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTIONS -->
+<section id="collections">
+  <div class="collections-head">
+    <div><p class="sec-tag reveal">Curated Spaces</p><h2 class="sec-title reveal reveal-delay-1">Our <em>Collections</em></h2></div>
+    <a href="#shop" class="btn-outline reveal">View All →</a>
+  </div>
+  <div class="collections-grid reveal">
+    <div class="coll-card featured">
+      <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=900&q=80" alt="Living Room">
+      <div class="coll-overlay"></div>
+      <div class="coll-info"><div class="coll-cat">Signature</div><div class="coll-name">The Living<br>Room Edit</div><div class="coll-arrow">Shop Now →</div></div>
+    </div>
+    <div class="coll-card">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80" alt="Bedroom">
+      <div class="coll-overlay"></div>
+      <div class="coll-info"><div class="coll-cat">Sanctuary</div><div class="coll-name">Bedroom Serene</div><div class="coll-arrow">Shop Now →</div></div>
+    </div>
+    <div class="coll-card">
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="Kitchen">
+      <div class="coll-overlay"></div>
+      <div class="coll-info"><div class="coll-cat">Nourish</div><div class="coll-name">Kitchen & Dining</div><div class="coll-arrow">Shop Now →</div></div>
+    </div>
+    <div class="coll-card">
+      <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80" alt="Study">
+      <div class="coll-overlay"></div>
+      <div class="coll-info"><div class="coll-cat">Focus</div><div class="coll-name">The Study</div><div class="coll-arrow">Shop Now →</div></div>
+    </div>
+    <div class="coll-card">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Outdoor">
+      <div class="coll-overlay"></div>
+      <div class="coll-info"><div class="coll-cat">Al Fresco</div><div class="coll-name">Outdoor Retreat</div><div class="coll-arrow">Shop Now →</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="products-head">
+    <div><p class="sec-tag reveal">Fresh In</p><h2 class="sec-title reveal reveal-delay-1">Featured <em>Pieces</em></h2></div>
+    <a href="#" class="btn-outline reveal">View All Products →</a>
+  </div>
+  <div class="filter-tabs reveal">
+    <button class="filter-tab active" onclick="filterTab(this)">All</button>
+    <button class="filter-tab" onclick="filterTab(this)">Seating</button>
+    <button class="filter-tab" onclick="filterTab(this)">Tables</button>
+    <button class="filter-tab" onclick="filterTab(this)">Storage</button>
+    <button class="filter-tab" onclick="filterTab(this)">Lighting</button>
+    <button class="filter-tab" onclick="filterTab(this)">Décor</button>
+  </div>
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&q=80" alt="Walnut Chair">
+        <span class="product-badge">New</span>
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Seating</div><div class="product-name">Walnut Curve Chair</div><div class="product-price">₹28,500</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?w=500&q=80" alt="Table Lamp">
+        <span class="product-badge" style="background:var(--clay)">Sale</span>
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Lighting</div><div class="product-name">Clay Form Table Lamp</div><div class="product-price"><span class="old">₹12,000</span>₹8,400</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?w=500&q=80" alt="Linen Sofa">
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Seating</div><div class="product-name">Linen Cloud Sofa</div><div class="product-price">₹1,24,000</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-3">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=500&q=80" alt="Side Table">
+        <span class="product-badge">New</span>
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Tables</div><div class="product-name">Travertine Side Table</div><div class="product-price">₹34,000</div></div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=500&q=80" alt="Pendant Light">
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Lighting</div><div class="product-name">Rattan Pendant</div><div class="product-price">₹9,200</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500&q=80" alt="Bookshelf">
+        <span class="product-badge" style="background:var(--moss)">Popular</span>
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Storage</div><div class="product-name">Teak Open Bookshelf</div><div class="product-price">₹56,000</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1543198126-a2e51e830dd4?w=500&q=80" alt="Jute Rug">
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Décor</div><div class="product-name">Handwoven Jute Rug</div><div class="product-price">₹18,500</div></div>
+    </div>
+    <div class="product-card reveal reveal-delay-3">
+      <div class="product-img-wrap">
+        <img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=500&q=80" alt="Dining Table">
+        <span class="product-badge">New</span>
+        <button class="product-wish">♡</button>
+        <button class="product-quick">Quick Add</button>
+      </div>
+      <div class="product-info"><div class="product-cat">Tables</div><div class="product-name">Mango Wood Dining Table</div><div class="product-price">₹98,000</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div style="text-align:center; max-width:580px; margin:0 auto;">
+    <p class="sec-tag reveal">How It Works</p>
+    <h2 class="sec-title reveal reveal-delay-1">From <em>forest</em> to your home</h2>
+  </div>
+  <div class="process-grid">
+    <div class="process-step reveal"><div class="step-num">01</div><div class="step-title">Material Sourcing</div><div class="step-desc">We partner with certified forests and stone quarries to source only sustainable, traceable raw materials.</div></div>
+    <div class="process-step reveal reveal-delay-1"><div class="step-num">02</div><div class="step-title">Artisan Crafting</div><div class="step-desc">Skilled craftspeople shape each piece by hand, preserving traditional techniques passed through generations.</div></div>
+    <div class="process-step reveal reveal-delay-2"><div class="step-num">03</div><div class="step-title">Quality Review</div><div class="step-desc">Each item passes a rigorous inspection checking finish, joints, and structural integrity before dispatch.</div></div>
+    <div class="process-step reveal reveal-delay-3"><div class="step-num">04</div><div class="step-title">White-Glove Delivery</div><div class="step-desc">Our trained team delivers and assembles your furniture in-home, leaving your space exactly as envisioned.</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-head">
+    <p class="sec-tag reveal">Client Stories</p>
+    <h2 class="sec-title reveal reveal-delay-1">Homes <em>transformed</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <p class="testi-text">The walnut dining table arrived perfectly finished. It has become the centrepiece of our home — every guest asks about it. Worth every rupee.</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://i.pravatar.cc/100?img=47" alt="Priya Mehta">
+        <div><div class="testi-name">Priya Mehta</div><div class="testi-role">Architect, Bengaluru</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <p class="testi-text">Terra redefined what "furniture shopping" means. The curation, the service, the quality — it all speaks of genuine care and artistry.</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://i.pravatar.cc/100?img=32" alt="Arjun Nair">
+        <div><div class="testi-name">Arjun Nair</div><div class="testi-role">Interior Designer, Mumbai</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="stars">★★★★★</div>
+      <div class="testi-quote">"</div>
+      <p class="testi-text">I ordered the linen sofa and rattan pendant together. The delivery team installed everything with such care. My living room finally feels like me.</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://i.pravatar.cc/100?img=21" alt="Sana Kapoor">
+        <div><div class="testi-name">Sana Kapoor</div><div class="testi-role">Homeowner, Delhi</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-strip">
+  <div class="nl-text"><div class="nl-tag">Stay Inspired</div><h3>Join the Terra Circle</h3></div>
+  <div class="nl-form">
+    <input type="email" placeholder="Your email address">
+    <button>Subscribe</button>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div>
+    <p class="sec-tag">Get In Touch</p>
+    <h2 class="sec-title">Let's <em>shape</em><br>your space</h2>
+    <p class="sec-body">Have a specific vision? Looking for bespoke furniture? Our design consultants are here to listen and create something uniquely yours.</p>
+    <div class="contact-info" style="margin-top:2.5rem;">
+      <div class="info-item"><div class="info-icon">📍</div><div><div class="info-label">Visit Us</div><div class="info-val">12 Indiranagar Main Rd,<br>Bengaluru, Karnataka 560038</div></div></div>
+      <div class="info-item"><div class="info-icon">📞</div><div><div class="info-label">Call Us</div><div class="info-val">+91 98765 43210<br>Mon–Sat, 10am – 7pm</div></div></div>
+      <div class="info-item"><div class="info-icon">✉️</div><div><div class="info-label">Email</div><div class="info-val">hello@terraliving.in</div></div></div>
+    </div>
+  </div>
+  <div class="contact-form reveal">
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" placeholder="Priya"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" placeholder="Mehta"></div>
+    </div>
+    <div class="form-group"><label>Email Address</label><input type="email" placeholder="priya@email.com"></div>
+    <div class="form-group">
+      <label>Interested In</label>
+      <select>
+        <option value="">Select a category…</option>
+        <option>Living Room Furniture</option>
+        <option>Bedroom Furniture</option>
+        <option>Dining & Kitchen</option>
+        <option>Lighting</option>
+        <option>Décor & Accessories</option>
+        <option>Bespoke / Custom</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Message</label><textarea placeholder="Tell us about your space and vision…"></textarea></div>
+    <button class="btn-send">Send Message →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">Terra</span>
+      <p>Rooted in nature, shaped by craft. Furniture and décor for lives lived with intention and beauty.</p>
+      <div class="social-links">
+        <a class="social-link" href="#" aria-label="Instagram">𝕀</a>
+        <a class="social-link" href="#" aria-label="Pinterest">P</a>
+        <a class="social-link" href="#" aria-label="Facebook">f</a>
+        <a class="social-link" href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Living Room</a></li>
+        <li><a href="#">Bedroom</a></li>
+        <li><a href="#">Dining & Kitchen</a></li>
+        <li><a href="#">Study & Office</a></li>
+        <li><a href="#">Outdoor</a></li>
+        <li><a href="#">New Arrivals</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About Terra</a></li>
+        <li><a href="#">Our Craftsmen</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns & Exchange</a></li>
+        <li><a href="#">Assembly Guide</a></li>
+        <li><a href="#">Care Instructions</a></li>
+        <li><a href="#">Track Your Order</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Terra Living. All rights reserved.</p>
+    <p>Privacy Policy · Terms of Service · Cookie Settings</p>
+  </div>
+</footer>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => { setTimeout(() => document.getElementById('loader').classList.add('done'), 1400); });
+
+  // Custom Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  (function animCursor(){
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animCursor);
+  })();
+  document.querySelectorAll('a,button,.product-card,.coll-card,.value-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY>60);
+    document.getElementById('backTop').classList.toggle('show', window.scrollY>400);
+  });
+
+  // Hamburger
+  const ham = document.getElementById('hamburger');
+  const mob = document.getElementById('mobileMenu');
+  let open=false;
+  ham.addEventListener('click', () => {
+    open=!open; mob.classList.toggle('open',open);
+    const s=ham.querySelectorAll('span');
+    s[0].style.transform=open?'rotate(45deg) translate(4.5px,4.5px)':'';
+    s[1].style.opacity=open?'0':'1';
+    s[2].style.transform=open?'rotate(-45deg) translate(4.5px,-4.5px)':'';
+  });
+  function closeMobile(){open=false;mob.classList.remove('open');ham.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='';})}
+
+  // Scroll reveal
+  const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Filter tabs
+  function filterTab(el){document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+
+  // Wishlist
+  document.querySelectorAll('.product-wish').forEach(btn=>{
+    btn.addEventListener('click',()=>{btn.textContent=btn.textContent==='♡'?'♥':'♡';btn.style.color=btn.textContent==='♥'?'var(--bark)':'';});
+  });
+</script>
+</body>
+</html>
