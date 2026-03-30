@@ -198,6 +198,11 @@
   .info-label { font-size: .66rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--clay); margin-bottom: .3rem; }
   .info-val { font-size: .88rem; font-weight: 300; color: rgba(245,239,230,.85); line-height: 1.6; }
 
+  /* MAP SECTION */
+  .map-wrapper { width: 100%; height: 50vh; min-height: 400px; display: block; overflow: hidden; background: var(--charcoal); }
+  .map-wrapper iframe { width: 100%; height: 100%; border: none; filter: grayscale(80%) sepia(30%) opacity(0.9); transition: filter .5s var(--ease-smooth); }
+  .map-wrapper iframe:hover { filter: grayscale(20%) sepia(10%) opacity(1); }
+
   /* FOOTER */
   footer { background: var(--charcoal); padding: 5rem 3.5rem 2.5rem; }
   .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgba(196,168,130,.15); }
@@ -271,6 +276,7 @@
     .newsletter-strip { padding: 2.5rem 1.8rem; }
     footer { padding: 4rem 1.8rem 2rem; }
     .collections-head, .products-head { flex-direction: column; align-items: flex-start; }
+    .map-wrapper { height: 40vh; }
   }
   @media (max-width: 600px) {
     .products-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -296,7 +302,6 @@
 <div class="cursor-ring" id="cursorRing"></div>
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<!-- NAV -->
 <nav id="nav">
   <a href="#home" class="nav-logo">Terra</a>
   <ul class="nav-links">
@@ -321,7 +326,6 @@
   <a href="#contact" onclick="closeMobile()">Contact</a>
 </div>
 
-<!-- HERO -->
 <section id="home">
   <div class="hero-left">
     <p class="hero-tag">New Arrivals 2025</p>
@@ -343,7 +347,6 @@
   </div>
 </section>
 
-<!-- MARQUEE -->
 <div class="marquee-bar">
   <div class="marquee-track">
     <span class="marquee-item">Sustainable Materials</span><span class="marquee-dot">✦</span>
@@ -359,7 +362,6 @@
   </div>
 </div>
 
-<!-- ABOUT -->
 <section id="about">
   <div class="about-imgs reveal">
     <img class="about-img-main" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&q=80" alt="Elegant sofa">
@@ -379,7 +381,6 @@
   </div>
 </section>
 
-<!-- COLLECTIONS -->
 <section id="collections">
   <div class="collections-head">
     <div><p class="sec-tag reveal">Curated Spaces</p><h2 class="sec-title reveal reveal-delay-1">Our <em>Collections</em></h2></div>
@@ -414,7 +415,6 @@
   </div>
 </section>
 
-<!-- SHOP -->
 <section id="shop">
   <div class="products-head">
     <div><p class="sec-tag reveal">Fresh In</p><h2 class="sec-title reveal reveal-delay-1">Featured <em>Pieces</em></h2></div>
@@ -501,7 +501,6 @@
   </div>
 </section>
 
-<!-- PROCESS -->
 <section id="process">
   <div style="text-align:center; max-width:580px; margin:0 auto;">
     <p class="sec-tag reveal">How It Works</p>
@@ -515,7 +514,6 @@
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
 <section id="testimonials">
   <div class="testi-head">
     <p class="sec-tag reveal">Client Stories</p>
@@ -552,7 +550,6 @@
   </div>
 </section>
 
-<!-- NEWSLETTER -->
 <div class="newsletter-strip">
   <div class="nl-text"><div class="nl-tag">Stay Inspired</div><h3>Join the Terra Circle</h3></div>
   <div class="nl-form">
@@ -561,7 +558,6 @@
   </div>
 </div>
 
-<!-- CONTACT -->
 <section id="contact">
   <div>
     <p class="sec-tag">Get In Touch</p>
@@ -596,7 +592,15 @@
   </div>
 </section>
 
-<!-- FOOTER -->
+<div class="map-wrapper reveal">
+  <iframe 
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.001696423075!2d77.63584821535496!3d12.978129990851412!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae16a4197c3bb9%3A0xc3f6089d713c7cb1!2sIndiranagar%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
@@ -664,7 +668,7 @@
     ring.style.left=rx+'px'; ring.style.top=ry+'px';
     requestAnimationFrame(animCursor);
   })();
-  document.querySelectorAll('a,button,.product-card,.coll-card,.value-card').forEach(el=>{
+  document.querySelectorAll('a,button,.product-card,.coll-card,.value-card,iframe').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
   });
